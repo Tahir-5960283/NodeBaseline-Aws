@@ -1,6 +1,6 @@
 import Express, { Request, Response } from "express";
 import userModel, { User } from "../models/userModel";
-import { register,loginUser,getAllUsers,verifyToken,signup,signIn } from "../userscontrollers/authUserController";
+import { register,loginUser,getAllUsers,verifyToken,signup } from "../userscontrollers/authUserController";
 //............ import controllers in the UserRoutes ...............//
 import mongoConnection from "../usersDB/usersDB";
 const router = Express.Router();
@@ -12,6 +12,4 @@ router.get('/User',verifyToken, getAllUsers)
 router.post('/loginUser', loginUser);
 //......... Route for new signup user .............................................//
 router.post('/signup', signup);
-//......... route for login .......................................................//
-router.post('/login', signIn);
 export { router };

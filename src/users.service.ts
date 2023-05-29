@@ -15,7 +15,6 @@ export async function createUser(input: User) {
     return user;
   } catch (e) {
     console.error(e);
-    //this is a test line
   }
 }
 

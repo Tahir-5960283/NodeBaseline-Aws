@@ -1,40 +1,26 @@
 import express, { Request, Response } from "express";
 import userModel, { User } from "../models/userModel";
 import dotenv from "dotenv";
-const axios = require('axios');
 require("dotenv").config();
+var axios = require("axios");
+import accessToken from "../salesforceTokenIntegration/salesforceCrmAccessTokenIntegration";
+// console.log('toke:' + token.token)
+import { CrmUserData } from "../crm models/crmUsers";
 import mongoose from "mongoose";
 import mongoConnection from "../usersDB/usersDB";
-import { request } from "http";
 import {
   findUser,
   findAndDeleteUser,
   findAndUpdateUser,
   createUser,
 } from "../users.service";
-var createRecordZohoApi_Url =process.env.creatRecordZohoApi_Url;
-//............. create All Record in Zoho ......................................//
-
+import console from "console";
+import { type } from "os";
 //............... Controllers for create a New User ...........................//
 const readAllDataFromDB = async (req: Request, res: Response) => {
   let readAllDataFromDB = await userModel.find({});
   console.log(readAllDataFromDB);
   res.json({ readAllDataFromDB: readAllDataFromDB });
-};
-// ........ callingApiControllers in Nodejs....................................
-const callingApiInNodejs = async (req: Request, res: Response) => {
-  try {
-    var rp = require("request-promise-native");
-    var options = {
-      apiUlr: "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",
-      json: true,
-    };
-
-    var response = await rp(options);
-    return response;
-  } catch (error) {
-    throw error;
-  }
 };
 //............ Controllers for CreateNewUser ................................//
 const createNewUser = async (req: Request, res: Response) => {
@@ -42,21 +28,63 @@ const createNewUser = async (req: Request, res: Response) => {
     let connection = await mongoConnection();
     var requestCreateNewUser: User = req.body;
     console.log("requestCreateNewUser:" + " " + requestCreateNewUser);
-    const NewUser = await createUser(requestCreateNewUser);
+    let NewUser = await createUser(requestCreateNewUser);
     console.log("createNewUser:" + " " + NewUser);
-    if(NewUser){
-      console.log('newUserBeforeInsertInZoho:' + ' ' + NewUser);
-      axios.post('https://www.zohoapis.com/crm/v2/Leads', {
-       role:NewUser.id,first_name:NewUser.firstName,email:NewUser.emailAddress,profile:NewUser.id,last_name:NewUser.lastName
-      })
-      .then((res) => {
-          console.log('resZohoRecordApi' + ' '+ res);
-          // console.log('resZohoRecordApi' + ' '+ res.data);
-      }).catch((err) => {
-          console.error(err);
-      });
-    }
     res.status(200).json(NewUser);
+    //  ...... post api request for salesforce crm ...............................................
+    if (NewUser !== null) {
+      let token = await accessToken();
+      console.log("retrieveTokenFromAccessToken:" + token);
+      let accessTokens = token;
+      console.log("accessTokenForIntegration:" + accessTokens);
+      const url =
+        "https://orbilon.my.salesforce.com/services/data/v57.0/sobjects/Account";
+      const data = {
+        Name: NewUser?.firstName,
+      };
+      const response = await axios.post(url, data, {
+          headers: {
+            Authorization: `Bearer ${accessTokens}`,
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        })
+        .then(function (response: any) {
+          console.log(response);
+        })
+        .catch(function (error: any) {
+          console.error(error);
+        });
+      //................... proccess the response data ..............................//
+    }
+    // Post Api request for Zoho Crm ...................................................//
+    // if (NewUser !== null) {
+    //   var requestData = {
+    //     data: [
+    //       {
+    //         First_Name: NewUser?.firstName,
+    //         Last_Name: NewUser?.lastName,
+    //         Company: NewUser?.company,
+    //         Lead_Status: NewUser?.leadStatus,
+    //         Email: NewUser?.emailAddress,
+    //       },
+    //     ],
+    //   };
+    //   var body = JSON.stringify(requestData);
+    //   let axiosConfig = {
+    //     headers: {
+    //       "Content-Type": "application/json;charset=UTF-8",
+    //       Authorization:JSON.stringify('access_Token'),
+    //     },
+    //   };
+    //   const response = await axios
+    //     .post("https://www.zohoapis.com/crm/v2/Leads", body, axiosConfig)
+    //     .then(function (response: any) {
+    //       console.log(response);
+    //     })
+    //     .catch(function (error: any) {
+    //       console.log(error);
+    //     });
+    // }
   } catch (e) {
     console.log(e);
     res.status(500).json(e);
@@ -117,5 +145,4 @@ export {
   updateUsers,
   readAllDataFromDB,
   deleteUser,
-  // callingApiInNodejs
 };
