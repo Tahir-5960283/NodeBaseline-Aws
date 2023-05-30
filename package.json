@@ -5,11 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve" :"nodemon ./src/users.ts",
+    "serve": "nodemon ./src/users.ts",
     "start": "nodemon ./src/salesforceCrmAccessTokenIntegration.ts"
-    
-    
-
   },
   "keywords": [],
   "author": "",

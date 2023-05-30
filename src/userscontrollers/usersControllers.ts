@@ -32,30 +32,31 @@ const createNewUser = async (req: Request, res: Response) => {
     console.log("createNewUser:" + " " + NewUser);
     res.status(200).json(NewUser);
     //  ...... post api request for salesforce crm ...............................................
-    if (NewUser !== null) {
-      let token = await accessToken();
-      console.log("retrieveTokenFromAccessToken:" + token);
-      let accessTokens = token;
-      console.log("accessTokenForIntegration:" + accessTokens);
-      const url =
-        "https://orbilon.my.salesforce.com/services/data/v57.0/sobjects/Account";
-      const data = {
-        Name: NewUser?.firstName,
-      };
-      const response = await axios.post(url, data, {
-          headers: {
-            Authorization: `Bearer ${accessTokens}`,
-            "Content-Type": "application/json;charset=UTF-8",
-          },
-        })
-        .then(function (response: any) {
-          console.log(response);
-        })
-        .catch(function (error: any) {
-          console.error(error);
-        });
-      //................... proccess the response data ..............................//
-    }
+    // if (NewUser !== null) {
+    //   let token = await accessToken();
+    //   console.log("retrieveTokenFromAccessToken:" + token);
+    //   let accessTokens = token;
+    //   console.log("accessTokenForIntegration:" + accessTokens);
+    //   const url =
+    //     "https://orbilon.my.salesforce.com/services/data/v57.0/sobjects/Account";
+    //   const data = {
+    //     Name: NewUser?.firstName,
+    //   };
+    //   const response = await axios.post(url, data, {
+    //       headers: {
+    //         Authorization: `Bearer ${accessTokens}`,
+    //         "Content-Type": "application/json;charset=UTF-8",
+    //       },
+    //     })
+    //     .then(function (response: any) {
+    //       console.log(response);
+    //     })
+    //     .catch(function (error: any) {
+    //       console.error(error);
+    //     });
+    //   //................... proccess the response data ..............................//
+    // }
+    //...............End The Post Api request for salesforce crm..........................//
     // Post Api request for Zoho Crm ...................................................//
     // if (NewUser !== null) {
     //   var requestData = {
