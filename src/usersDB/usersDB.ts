@@ -10,5 +10,4 @@ var mongoConnection = async () => {
     console.error(e);
   }
 };
-  
 export default mongoConnection;

@@ -1,1 +1,4 @@
 /node_modules
+/dist
+zcrm_oauthtokens.text
+src/callingapiNodejs.ts

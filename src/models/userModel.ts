@@ -1,15 +1,14 @@
 import { Schema, model } from "mongoose";
 // ................... creating interface of Contact ...................................
 export interface User {
-  firstName:string;
-  lastName:string;
   id: string;
   name: string;
+  firstName:string;
+  lastName:string;
   emailAddress: string;
   createdDate: Date;
   phoneNumber: string;
   company: string;
-  leadStatus:string;
   isActive: boolean;
   ModifiedDate: Date;
   emailVerified: boolean;
@@ -21,15 +20,14 @@ export interface User {
 const userSchema = new Schema<User>({
   id: { type: String, required: false },
   name: { type: String, required: false },
+  firstName:{type:String,required:true},
+  lastName:{type:String,required:true},
   phoneNumber: { type: String, required: false },
-  firstName: { type: String, required: false },
-  lastName: { type: String, required: false },
   company: { type: String, required: false },
   emailAddress: { type: String, required: false },
   createdDate: { type: Date, required: false },
   isActive: { type: Boolean, required: false },
   ModifiedDate: { type: Date, required: false },
-  leadStatus:{type:String, required:false},
   phoneVerified: { type: Boolean, required: false, default: false },
   emailVerified: { type: Boolean, required: false, default: false },
   twoFactorAuthenticationEnabled: { type: Boolean, default: false },
